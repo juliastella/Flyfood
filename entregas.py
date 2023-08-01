@@ -106,7 +106,8 @@ if __name__ == '__main__':
         'matriz2.txt',
         'matriz3.txt',
         'matriz4.txt',
-        'matriz5.txt']
+        'matriz5.txt',
+        'matriz6.txt']
 
     for arquivo in arquivos_teste:          #roda o programa para cada matriz na lista.
         main(arquivo, entradas, tempos)
