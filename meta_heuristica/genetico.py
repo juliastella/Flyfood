@@ -4,7 +4,8 @@ from matplotlib import pyplot as plt
 
 class Cidade:
     """ Inicia a cidade com as coordenadas, deve receber tupla com x e y"""
-    def __init__(self, coordenadas):
+    def __init__(self, coordenadas, indice):
+        self.nome = indice
         self.x = coordenadas[0]
         self.y = coordenadas[1]
 
@@ -46,8 +47,8 @@ class Individuo:
 
 def criarCidades(coordenadas):
     lista = []
-    for cidade in coordenadas:        
-        lista.append(Cidade(cidade))
+    for indx, (x, y) in coordenadas.items():
+        lista.append(Cidade((x,y), indx))
     return lista
 
 def distEuclidiana(cidade1, cidade2):
@@ -196,95 +197,32 @@ def geracoes(pop, taxa_crossover, taxa_mutacao, n_pop, n_geracoes):
     plt.show()
 
 
-
+def lerCoordenadas(arquivo, coordenadas):
+    with open(arquivo, "r") as arquivo:
+        for linha in arquivo:
+            partes = linha.strip().split()
+            cidade_indx = int(partes[0])
+            x = float(partes[1])
+            y = float(partes[2])
+            coordenadas[cidade_indx] = (x, y)
 
 def principal():
+# 8094
+    lenght_pop = 100    # Tamanho da população
+    taxa_crossover = 0.45   # Taxa de crossover
+    taxa_mutacao = 0.004   # Taxa de mutação
+    n_geracoes = 2400  # Número de gerações
 
-    coords = [(64,96),
-(80,39),
-(69,23),
-(72,42),
-(48,67),
-(58,43),
-(81,34),
-(79,17),
-(30,23),
-(42,67),
-(7,76),
-(29,51),
-(78,92),
-(64,8),
-(95,57),
-(57,91),
-(40,35),
-(68,40),
-(92,34),
-(62,1),
-(28,43),
-(76,73),
-(67,88),
-(93,54),
-(6,8),
-(87,18),
-(30,9),
-(77,13),
-(78,94),
-(55,3),
-(82,88),
-(73,28),
-(20,55),
-(27,43),
-(95,86),
-(67,99),
-(48,83),
-(75,81),
-(8,19),
-(20,18),
-(54,38),
-(63,36),
-(44,33),
-(52,18),
-(12,13),
-(25,5),
-(58,85),
-(5,67),
-(90,9),
-(41,76),
-(25,76),
-(37,64),
-(56,63),
-(10,55),
-(98,7),
-(16,74),
-(89,60),
-(48,82),
-(81,76),
-(29,60),
-(17,22),
-(5,45),
-(79,70),
-(9,100),
-(17,82),
-(74,67),
-(10,68),
-(48,19),
-(83,86),
-(84,94)]
+
+
 
     
-
-    lenght_pop = 600      # Tamanho da população
-    taxa_crossover = 1 # Taxa de crossover
-    taxa_mutacao = 0.0015   # Taxa de mutação
-    n_geracoes = 1000  # Número de gerações
+    coordenadas = {}
+    arquivo = "berlin52.txt"
 
 
-    # lenght_pop = 600      # Tamanho da população
-    # taxa_crossover = 0.6  # Taxa de crossover
-    # taxa_mutacao = 0.0015   # Taxa de mutação
-    # n_geracoes = 600  # Número de gerações
-
-    cities = criarCidades(coords)  #Transforma  as coordenadas em objetos cidade e guarda na lista 
+    lerCoordenadas(arquivo, coordenadas)
+    cities = criarCidades(coordenadas)  #Transforma  as coordenadas em objetos cidade e guarda na lista 
     initial_pop = popInicial(cities, lenght_pop)  # Gera a população inicial
     geracoes(initial_pop, taxa_crossover, taxa_mutacao, lenght_pop, n_geracoes) #Começa a evolução
 
