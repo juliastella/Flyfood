@@ -45,11 +45,22 @@ class Individuo:
         self.custo = custo_total
 
 
+def lerCoordenadas(arquivo, coordenadas):
+    with open(arquivo, "r") as arquivo:
+        for linha in arquivo:
+            partes = linha.strip().split()
+            cidade_indx = int(partes[0])
+            x = float(partes[1])
+            y = float(partes[2])
+            coordenadas[cidade_indx] = (x, y)
+
+
 def criarCidades(coordenadas):
     lista = []
     for indx, (x, y) in coordenadas.items():
         lista.append(Cidade((x,y), indx))
     return lista
+
 
 def distEuclidiana(cidade1, cidade2):
     """Calcula a distância entre as cidades com a fórmula de distância euclidiana"""
@@ -197,17 +208,8 @@ def geracoes(pop, taxa_crossover, taxa_mutacao, n_pop, n_geracoes):
     plt.show()
 
 
-def lerCoordenadas(arquivo, coordenadas):
-    with open(arquivo, "r") as arquivo:
-        for linha in arquivo:
-            partes = linha.strip().split()
-            cidade_indx = int(partes[0])
-            x = float(partes[1])
-            y = float(partes[2])
-            coordenadas[cidade_indx] = (x, y)
 
 def principal():
-# 8094
     lenght_pop = 1000    # Tamanho da população
     taxa_crossover = 0.5   # Taxa de crossover
     taxa_mutacao = 0.005   # Taxa de mutação
@@ -216,7 +218,6 @@ def principal():
 
 
 
-    
     coordenadas = {}
     # arquivo = "berlin52.txt"
     arquivo = "bays29.txt"
