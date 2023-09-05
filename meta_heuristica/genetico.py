@@ -1,14 +1,16 @@
 import random
 from matplotlib import pyplot as plt
 
+"""Todos numerados são auxiliares para o desenvolvimento"""
 
+#######Parte 03#########
 class Cidade:
     """ Inicia a cidade com as coordenadas, deve receber tupla com x e y"""
     def __init__(self, coordenadas):
         self.x = coordenadas[0]
         self.y = coordenadas[1]
 
-
+#######Parte 02, contem o fitness do individuo#########
 class Individuo:
     """Inicia uma rota, deve receber uma lista com os objetos cidade"""
     def __init__(self, cidades=None, permutar=True):
@@ -43,16 +45,21 @@ class Individuo:
         self.fitness = 1 / custo_total
         self.custo = custo_total
 
+#######Parte 01, contem o calculo matematico para a avalição dos individuos#########
+
+def distEuclidiana(cidade1, cidade2):
+    """Calcula a distância entre as cidades com a fórmula de distância euclidiana"""
+    return ((cidade2.x - cidade1.x)**2 + (cidade2.y - cidade1.y)**2) **0.5
+
+"""Todos numerados a abixos estão na ordem do algoritmo genetico"""
+
+#######Parte 04 populacao inicial #########
 
 def criarCidades(coordenadas):
     lista = []
     for cidade in coordenadas:        
         lista.append(Cidade(cidade))
     return lista
-
-def distEuclidiana(cidade1, cidade2):
-    """Calcula a distância entre as cidades com a fórmula de distância euclidiana"""
-    return ((cidade2.x - cidade1.x)**2 + (cidade2.y - cidade1.y)**2) **0.5
 
 
 def comparaAdd(lista, individuo):
@@ -71,11 +78,14 @@ def popInicial(cidades ,tamanho_populacao):
     return populacao
 
 
+######Parte 05 Avaliação da população e individos #########
+
 def fitPopulacao(populacao):
     """Calcula e armazena o fitness de toda a população"""
     for individuo in populacao:
         individuo.ifitness()
 
+##########Parte 06 seleção por torneio #########
 
 def torneio(populacao, tamanho_populacao):
     """ Seleção por Torneio"""
@@ -101,6 +111,7 @@ def isHere(gene, individuo):
             return True
     return False
 
+#########Parte 07 operação de Reprodução dos pais##########
 
 def crossIndividuo(pai1, pai2, taxa_crossover):
     """Função para gerar novos individuos a partir de dois pais selecionados"""
@@ -145,6 +156,7 @@ def crossPopulacao(pais, n_populacao, taxa_crossover):
         filhos[crossover + 1] = filho2
     return filhos
 
+#########Parte 08 mutação dos individuos e população##########
 
 def mutacaoIndv(individuo, taxa_mutacao):
     """ Mutação de um filho"""
@@ -165,6 +177,7 @@ def mutacaoPop(filhos, taxa_mutacao):
         filhos[idx] = mutacaoIndv(individuo, taxa_mutacao)
     return filhos
 
+#########Parte 09  Avaliação do filhos ou seja o melhor individuos dessa nova população##########
 
 def melhorIndv(pais, geracao, lista):
     max_fitness = 0
@@ -178,6 +191,7 @@ def melhorIndv(pais, geracao, lista):
     print(f"Geração {geracao + 1}, Melhor fitness: {pais[max_indx].custo }")
     lista.append(pais[max_indx].custo)
 
+#########Parte 10  controle de gerações, controla a evolução da população ao logo de outras gerações##########
 
 def geracoes(pop, taxa_crossover, taxa_mutacao, n_pop, n_geracoes):
     lista_fitness = []          #Armazenará o melhor fitness de cada geração.
@@ -196,7 +210,7 @@ def geracoes(pop, taxa_crossover, taxa_mutacao, n_pop, n_geracoes):
     plt.show()
 
 
-
+#########Parte 11  controla a exeção do programa##########
 
 def principal():
 
