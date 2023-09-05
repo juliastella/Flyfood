@@ -208,17 +208,19 @@ def lerCoordenadas(arquivo, coordenadas):
 
 def principal():
 # 8094
-    lenght_pop = 100    # Tamanho da população
-    taxa_crossover = 0.45   # Taxa de crossover
-    taxa_mutacao = 0.004   # Taxa de mutação
-    n_geracoes = 2400  # Número de gerações
+    lenght_pop = 1000    # Tamanho da população
+    taxa_crossover = 0.5   # Taxa de crossover
+    taxa_mutacao = 0.005   # Taxa de mutação
+    n_geracoes = 1_000  # Número de gerações
 
 
 
 
     
     coordenadas = {}
-    arquivo = "berlin52.txt"
+    # arquivo = "berlin52.txt"
+    arquivo = "bays29.txt"
+    # arquivo = "ts225.txt"
 
 
     lerCoordenadas(arquivo, coordenadas)
