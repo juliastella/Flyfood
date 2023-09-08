@@ -1,16 +1,15 @@
 import random
 from matplotlib import pyplot as plt
 
-"""Todos numerados são auxiliares para o desenvolvimento"""
 
-#######Parte 03#########
 class Cidade:
     """ Inicia a cidade com as coordenadas, deve receber tupla com x e y"""
-    def __init__(self, coordenadas):
+    def __init__(self, coordenadas, indice):
+        self.nome = indice
         self.x = coordenadas[0]
         self.y = coordenadas[1]
 
-#######Parte 02, contem o fitness do individuo#########
+
 class Individuo:
     """Inicia uma rota, deve receber uma lista com os objetos cidade"""
     def __init__(self, cidades=None, permutar=True):
@@ -45,21 +44,27 @@ class Individuo:
         self.fitness = 1 / custo_total
         self.custo = custo_total
 
-#######Parte 01, contem o calculo matematico para a avalição dos individuos#########
+
+def lerCoordenadas(arquivo, coordenadas):
+    with open(arquivo, "r") as arquivo:
+        for linha in arquivo:
+            partes = linha.strip().split()
+            cidade_indx = int(partes[0])
+            x = float(partes[1])
+            y = float(partes[2])
+            coordenadas[cidade_indx] = (x, y)
+
+
+def criarCidades(coordenadas):
+    lista = []
+    for indx, (x, y) in coordenadas.items():
+        lista.append(Cidade((x,y), indx))
+    return lista
+
 
 def distEuclidiana(cidade1, cidade2):
     """Calcula a distância entre as cidades com a fórmula de distância euclidiana"""
     return ((cidade2.x - cidade1.x)**2 + (cidade2.y - cidade1.y)**2) **0.5
-
-"""Todos numerados a abixos estão na ordem do algoritmo genetico"""
-
-#######Parte 04 populacao inicial #########
-
-def criarCidades(coordenadas):
-    lista = []
-    for cidade in coordenadas:        
-        lista.append(Cidade(cidade))
-    return lista
 
 
 def comparaAdd(lista, individuo):
@@ -78,14 +83,11 @@ def popInicial(cidades ,tamanho_populacao):
     return populacao
 
 
-######Parte 05 Avaliação da população e individos #########
-
 def fitPopulacao(populacao):
     """Calcula e armazena o fitness de toda a população"""
     for individuo in populacao:
         individuo.ifitness()
 
-##########Parte 06 seleção por torneio #########
 
 def torneio(populacao, tamanho_populacao):
     """ Seleção por Torneio"""
@@ -111,7 +113,6 @@ def isHere(gene, individuo):
             return True
     return False
 
-#########Parte 07 operação de Reprodução dos pais##########
 
 def crossIndividuo(pai1, pai2, taxa_crossover):
     """Função para gerar novos individuos a partir de dois pais selecionados"""
@@ -156,7 +157,6 @@ def crossPopulacao(pais, n_populacao, taxa_crossover):
         filhos[crossover + 1] = filho2
     return filhos
 
-#########Parte 08 mutação dos individuos e população##########
 
 def mutacaoIndv(individuo, taxa_mutacao):
     """ Mutação de um filho"""
@@ -177,9 +177,8 @@ def mutacaoPop(filhos, taxa_mutacao):
         filhos[idx] = mutacaoIndv(individuo, taxa_mutacao)
     return filhos
 
-#########Parte 09  Avaliação do filhos ou seja o melhor individuos dessa nova população##########
 
-def melhorIndv(pais, geracao, lista):
+def melhorIndv(pais, geracao, geracoes, lista):
     max_fitness = 0
     
     for indx, indv in enumerate(pais):
@@ -187,11 +186,13 @@ def melhorIndv(pais, geracao, lista):
             max_indx = indx
 
 
-    # print(f"Geração {geracao + 1}, Melhor fitness: {pais[max_indx].custo }, Melhor rota: {pais[max_indx]}") 
-    print(f"Geração {geracao + 1}, Melhor fitness: {pais[max_indx].custo }")
+    if geracao == geracoes - 1:
+        print(f"Geração {geracao + 1}, Melhor fitness: {pais[max_indx].custo }, Melhor rota: {pais[max_indx]}") 
+    else:
+        print(f"Geração {geracao + 1}, Melhor fitness: {pais[max_indx].custo }")
+
     lista.append(pais[max_indx].custo)
 
-#########Parte 10  controle de gerações, controla a evolução da população ao logo de outras gerações##########
 
 def geracoes(pop, taxa_crossover, taxa_mutacao, n_pop, n_geracoes):
     lista_fitness = []          #Armazenará o melhor fitness de cada geração.
@@ -204,101 +205,31 @@ def geracoes(pop, taxa_crossover, taxa_mutacao, n_pop, n_geracoes):
         fitPopulacao(pop)  # Recalcule o fitness após a mutação
         parents = torneio(pop, n_pop)  # Selecione novos pais para a próxima geração
         # Imprima ou armazene informações sobre a geração, se necessário
-        melhorIndv(parents, geracao, lista_fitness)
+        melhorIndv(parents, geracao, n_geracoes, lista_fitness)
     
     plt.plot([i for i in range(0, n_geracoes)], lista_fitness)
     plt.show()
 
 
-#########Parte 11  controla a exeção do programa##########
 
 def principal():
-
-    coords = [(64,96),
-(80,39),
-(69,23),
-(72,42),
-(48,67),
-(58,43),
-(81,34),
-(79,17),
-(30,23),
-(42,67),
-(7,76),
-(29,51),
-(78,92),
-(64,8),
-(95,57),
-(57,91),
-(40,35),
-(68,40),
-(92,34),
-(62,1),
-(28,43),
-(76,73),
-(67,88),
-(93,54),
-(6,8),
-(87,18),
-(30,9),
-(77,13),
-(78,94),
-(55,3),
-(82,88),
-(73,28),
-(20,55),
-(27,43),
-(95,86),
-(67,99),
-(48,83),
-(75,81),
-(8,19),
-(20,18),
-(54,38),
-(63,36),
-(44,33),
-(52,18),
-(12,13),
-(25,5),
-(58,85),
-(5,67),
-(90,9),
-(41,76),
-(25,76),
-(37,64),
-(56,63),
-(10,55),
-(98,7),
-(16,74),
-(89,60),
-(48,82),
-(81,76),
-(29,60),
-(17,22),
-(5,45),
-(79,70),
-(9,100),
-(17,82),
-(74,67),
-(10,68),
-(48,19),
-(83,86),
-(84,94)]
-
     
+    lenght_pop = 200    # Tamanho da população
+    taxa_crossover = 0.6   # Taxa de crossover
+    taxa_mutacao = 0.0045   # Taxa de mutação
+    n_geracoes = 1_000  # Número de gerações
 
-    lenght_pop = 600      # Tamanho da população
-    taxa_crossover = 1 # Taxa de crossover
-    taxa_mutacao = 0.0015   # Taxa de mutação
-    n_geracoes = 1000  # Número de gerações
 
 
-    # lenght_pop = 600      # Tamanho da população
-    # taxa_crossover = 0.6  # Taxa de crossover
-    # taxa_mutacao = 0.0015   # Taxa de mutação
-    # n_geracoes = 600  # Número de gerações
 
-    cities = criarCidades(coords)  #Transforma  as coordenadas em objetos cidade e guarda na lista 
+    coordenadas = {}
+    # arquivo = "berlin52.txt"
+    arquivo = "bays29.txt"
+    # arquivo = "ts225.txt"
+
+
+    lerCoordenadas(arquivo, coordenadas)
+    cities = criarCidades(coordenadas)  #Transforma  as coordenadas em objetos cidade e guarda na lista 
     initial_pop = popInicial(cities, lenght_pop)  # Gera a população inicial
     geracoes(initial_pop, taxa_crossover, taxa_mutacao, lenght_pop, n_geracoes) #Começa a evolução
 
