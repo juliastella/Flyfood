@@ -80,8 +80,20 @@ def construir_trilha(cidades, num_formigas, num_geracoes, alfa=1.0, beta=1.0, ta
 
     return melhor_rota, melhor_distancia
 
+def lerCoordenadas(arquivo):
+    coordenadas = []
+    with open(arquivo, "r") as arquivo:
+        for linha in arquivo:
+            partes = linha.strip().split()
+            x = float(partes[1])
+            y = float(partes[2])
+            coordenadas.append((x, y))
+    return coordenadas
+
+
+
 def main():
-    coords = [(64, 96), (80, 39), (69, 23), (72, 42)]
+    coordenadas = lerCoordenadas('berlin52.txt')
 
     num_formigas = 50
     num_geracoes = 500
@@ -89,13 +101,13 @@ def main():
     beta = 1.0
     taxa_evaporacao = 0.1
 
-    melhor_rota, melhor_distancia = construir_trilha(coords, num_formigas, num_geracoes, alfa, beta, taxa_evaporacao)
+    melhor_rota, melhor_distancia = construir_trilha(coordenadas, num_formigas, num_geracoes, alfa, beta, taxa_evaporacao)
 
     print(f"Melhor rota encontrada: {melhor_rota}")
     print(f"Melhor distância encontrada: {melhor_distancia}")
 
-    x = [coords[i][0] for i in melhor_rota]
-    y = [coords[i][1] for i in melhor_rota]
+    x = [coordenadas[i][0] for i in melhor_rota]
+    y = [coordenadas[i][1] for i in melhor_rota]
     x.append(x[0])
     y.append(y[0])
     plt.plot(x, y, marker='o')
