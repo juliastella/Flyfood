@@ -1,5 +1,6 @@
 import random
 import matplotlib.pyplot as plt
+import time
 
 class Formiga:
     def __init__(self, cidade_inicial, num_cidades):
@@ -48,13 +49,21 @@ def calcular_distancia_rota(rota, cidades):
         distancia_total += distEuclidiana(cidade_atual, cidade_seguinte)
     return distancia_total
 
-def construir_trilha(cidades, num_formigas, num_geracoes, alfa=1.0, beta=1.0, taxa_evaporacao=0.1):
+def construir_trilha(cidades, num_formigas, num_geracoes, alfa=1.0, beta=1.0, taxa_evaporacao=0.1, num_elites=1):
     num_cidades = len(cidades)
-    melhor_rota = None
-    melhor_distancia = float('inf')
     feromonio = [[1.0 for _ in range(num_cidades)] for _ in range(num_cidades)]
+    
+    melhor_rota_global = None
+    melhor_distancia_global = float('inf')
+    melhor_distancia_por_geracao = []
 
-    for _ in range(num_geracoes):
+    geracoes_sem_melhoria = 0
+    elites = []
+
+    for geracao in range(num_geracoes):
+        melhor_rota_local = None
+        melhor_distancia_local = float('inf')
+        
         for _ in range(num_formigas):
             cidade_inicial = random.randint(0, num_cidades - 1)
             formiga = Formiga(cidade_inicial, num_cidades)
@@ -64,21 +73,39 @@ def construir_trilha(cidades, num_formigas, num_geracoes, alfa=1.0, beta=1.0, ta
 
             distancia_total = calcular_distancia_rota(formiga.rota, cidades)
 
-            if distancia_total < melhor_distancia:
-                melhor_rota = formiga.rota[:]
-                melhor_distancia = distancia_total
+            if distancia_total < melhor_distancia_local:
+                melhor_rota_local = formiga.rota[:]
+                melhor_distancia_local = distancia_total
 
-            for i in range(num_cidades):
-                for j in range(i+1, num_cidades):
+        # Atualize o melhor resultado global se necessário
+        if melhor_distancia_local < melhor_distancia_global:
+            melhor_rota_global = melhor_rota_local[:]
+            melhor_distancia_global = melhor_distancia_local
+            geracoes_sem_melhoria = 0
+        else:
+            geracoes_sem_melhoria += 1
+
+        melhor_distancia_por_geracao.append(melhor_distancia_global)
+
+        print(f"Geração {geracao + 1}, Melhor fitness local: {1.0 / melhor_distancia_local}")
+
+        # Adicione as elites à lista
+        if len(elites) < num_elites or melhor_distancia_local < min(elites):
+            elites.append(melhor_distancia_local)
+
+        # Atualize o feromônio apenas das elites
+        for i in range(num_cidades):
+            for j in range(i + 1, num_cidades):
+                if melhor_distancia_local in elites:
                     feromonio[i][j] *= (1.0 - taxa_evaporacao)
                     feromonio[j][i] = feromonio[i][j]
-                for cidade in formiga.rota:
+                for cidade in melhor_rota_local:
                     if cidade != cidade_inicial:
-                        quantidade_depositada = 1.0 / distancia_total
+                        quantidade_depositada = 1.0 / melhor_distancia_local
                         feromonio[cidade_inicial][cidade] += quantidade_depositada
                         feromonio[cidade][cidade_inicial] = feromonio[cidade_inicial][cidade]
-
-    return melhor_rota, melhor_distancia
+        
+    return melhor_rota_global, melhor_distancia_global, melhor_distancia_por_geracao
 
 def lerCoordenadas(arquivo):
     coordenadas = []
@@ -90,10 +117,8 @@ def lerCoordenadas(arquivo):
             coordenadas.append((x, y))
     return coordenadas
 
-
-
 def main():
-    coordenadas = lerCoordenadas('berlin52.txt')
+    coordenadas = lerCoordenadas('/home/me/Documents/Faculdade/periodo-02/Flyfood/meta_heuristica/berlin52.txt')
 
     num_formigas = 50
     num_geracoes = 500
@@ -101,16 +126,36 @@ def main():
     beta = 1.0
     taxa_evaporacao = 0.1
 
-    melhor_rota, melhor_distancia = construir_trilha(coordenadas, num_formigas, num_geracoes, alfa, beta, taxa_evaporacao)
+    start_time = time.time() 
+
+    melhor_rota, melhor_distancia, melhor_distancia_por_geracao = construir_trilha(coordenadas, num_formigas, num_geracoes, alfa, beta, taxa_evaporacao)
+
+    end_time = time.time() 
+
+    tempo_de_execucao = end_time - start_time
 
     print(f"Melhor rota encontrada: {melhor_rota}")
     print(f"Melhor distância encontrada: {melhor_distancia}")
+    print(f"Tempo de execução: {tempo_de_execucao} segundos\n")
 
     x = [coordenadas[i][0] for i in melhor_rota]
     y = [coordenadas[i][1] for i in melhor_rota]
-    x.append(x[0])
-    y.append(y[0])
+
+    plt.figure(figsize=(12, 6))
+    
+    # Gráfico 1: Melhor rota encontrada
+    plt.subplot(1, 2, 1)
     plt.plot(x, y, marker='o')
+    plt.title('Melhor Rota Encontrada')
+    
+    # Gráfico 2: Evolução da Melhor Distância
+    plt.subplot(1, 2, 2)
+    plt.plot(melhor_distancia_por_geracao, marker='o')
+    plt.title('Evolução da Melhor Distância')
+    plt.xlabel('Geração')
+    plt.ylabel('Distância')
+
+    plt.tight_layout()
     plt.show()
 
 if __name__ == "__main__":
