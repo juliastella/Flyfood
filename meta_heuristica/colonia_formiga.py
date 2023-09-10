@@ -2,6 +2,12 @@ import random
 import matplotlib.pyplot as plt
 import time
 
+# Defina a semente aleatória aqui
+random.seed(45)  # Substitua 42 pelo valor de semente desejado
+
+# Agora você pode usar funções aleatórias da biblioteca random com a semente definida
+valor_aleatorio = random.random()  # Isso gerará o mesmo valor toda vez com a semente 42
+
 # Definição da classe Formiga
 
 """Esta classe representa uma formiga que percorre as cidades. Ela mantém o controle da cidade atual, das cidades não visitadas e da rota percorrida até agora. """
@@ -150,13 +156,13 @@ def main():
 
     # Lê as coordenadas das cidades de um arquivo
 
-    coordenadas = lerCoordenadas('meta_heuristica/berlin52.txt')
+    coordenadas = lerCoordenadas('meta_heuristica/ts225.txt')
 
     num_formigas = 50
     num_geracoes = 500
     alfa = 1.0
-    beta = 4.0
-    taxa_evaporacao = 0.1
+    beta = 5.0
+    taxa_evaporacao = 0.06
 
     start_time = time.time() 
 
@@ -177,16 +183,13 @@ def main():
 
     plt.figure(figsize=(12, 6))
     
-        # Gráfico da Melhor Rota Encontrada
+    # Gráfico da Melhor Rota Encontrada
     plt.figure(figsize=(10, 6))  # Tamanho maior do gráfico
     plt.plot(x, y, marker='o', markersize=6, linestyle='-', color='g')  # Linha contínua e marcadores maiores
     plt.title('Melhor Rota Encontrada')  # Título do gráfico
     plt.xlabel('Coordenada X')  # Rótulo do eixo X
     plt.ylabel('Coordenada Y')  # Rótulo do eixo Y
 
-    # Adicione rótulos de cidade às coordenadas
-    for i, (xi, yi) in enumerate(zip(x, y)):
-        plt.text(xi, yi, f'Cidade {i}', fontsize=8, ha='center', va='bottom')
 
     
     # Gráfico 2: Evolução da Melhor Distância
