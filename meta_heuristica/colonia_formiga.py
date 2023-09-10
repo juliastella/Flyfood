@@ -150,12 +150,12 @@ def main():
 
     # Lê as coordenadas das cidades de um arquivo
 
-    coordenadas = lerCoordenadas('/home/me/Documents/Faculdade/periodo-02/Flyfood/meta_heuristica/berlin52.txt')
+    coordenadas = lerCoordenadas('meta_heuristica/berlin52.txt')
 
     num_formigas = 50
     num_geracoes = 500
     alfa = 1.0
-    beta = 1.0
+    beta = 4.0
     taxa_evaporacao = 0.1
 
     start_time = time.time() 
@@ -177,20 +177,31 @@ def main():
 
     plt.figure(figsize=(12, 6))
     
-    # Gráfico 1: Melhor rota encontrada
-    plt.subplot(1, 2, 1)
-    plt.plot(x, y, marker='o')
-    plt.title('Melhor Rota Encontrada')
+        # Gráfico da Melhor Rota Encontrada
+    plt.figure(figsize=(10, 6))  # Tamanho maior do gráfico
+    plt.plot(x, y, marker='o', markersize=6, linestyle='-', color='g')  # Linha contínua e marcadores maiores
+    plt.title('Melhor Rota Encontrada')  # Título do gráfico
+    plt.xlabel('Coordenada X')  # Rótulo do eixo X
+    plt.ylabel('Coordenada Y')  # Rótulo do eixo Y
+
+    # Adicione rótulos de cidade às coordenadas
+    for i, (xi, yi) in enumerate(zip(x, y)):
+        plt.text(xi, yi, f'Cidade {i}', fontsize=8, ha='center', va='bottom')
+
     
     # Gráfico 2: Evolução da Melhor Distância
-    plt.subplot(1, 2, 2)
-    plt.plot(melhor_distancia_por_geracao, marker='o')
-    plt.title('Evolução da Melhor Distância')
-    plt.xlabel('Geração')
-    plt.ylabel('Distância')
 
+    # Gráfico de Evolução da Melhor Distância
+    plt.figure(figsize=(10, 6))  # Tamanho maior do gráfico
+    plt.plot(range(num_geracoes), melhor_distancia_por_geracao, marker='o', markersize=5, linestyle='-', color='b')  # Linha contínua e marcadores maiores
+    plt.title('Evolução da Melhor Distância')  # Título do gráfico
+    plt.xlabel('Geração')  # Rótulo do eixo X
+    plt.ylabel('Melhor Distância')  # Rótulo do eixo Y
+    plt.grid(True)  # Adicione uma grade de fundo
     plt.tight_layout()
     plt.show()
+
+
 
 if __name__ == "__main__":
     main()
