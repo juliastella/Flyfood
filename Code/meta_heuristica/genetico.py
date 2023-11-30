@@ -224,7 +224,7 @@ def principal():
 
     coordenadas = {}
     # arquivo = "berlin52.txt"
-    arquivo = "bays29.txt"
+    arquivo = "Code/meta_heuristica/bays29.txt"
     # arquivo = "ts225.txt"
 
 

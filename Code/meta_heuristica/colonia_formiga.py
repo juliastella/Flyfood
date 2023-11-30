@@ -156,7 +156,7 @@ def main():
 
     # Lê as coordenadas das cidades de um arquivo
 
-    coordenadas = lerCoordenadas('meta_heuristica/ts225.txt')
+    coordenadas = lerCoordenadas('Code/meta_heuristica/bays29.txt')
 
     num_formigas = 50
     num_geracoes = 500
