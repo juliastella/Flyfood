@@ -102,11 +102,11 @@ if __name__ == '__main__':
     tempos = []     # receberá o tempo de execução de cada matriz. 
 
     arquivos_teste = [
-        'matriz1.txt',
-        'matriz2.txt',
-        'matriz3.txt',
-        'matriz4.txt',
-        'matriz5.txt']
+        'Code/forca_bruta/matriz1.txt',
+        'Code/forca_bruta/matriz2.txt',
+        'Code/forca_bruta/matriz3.txt',
+        'Code/forca_bruta/matriz4.txt',
+        'Code/forca_bruta/matriz5.txt']
 
     for arquivo in arquivos_teste:          #roda o programa para cada matriz na lista.
         main(arquivo, entradas, tempos)
